@@ -22,22 +22,17 @@ jobs:
       - name: List release files
         run: ls -lah target/x86_64-apple-darwin/release
 
-      - name: Prepare artifact
+      - name: Prepare artifacts
         run: |
-          if [ -f target/x86_64-apple-darwin/release/playit-cli ]; then
-            cp target/x86_64-apple-darwin/release/playit-cli playit-macos-intel
-          elif [ -f target/x86_64-apple-darwin/release/playit-agent ]; then
-            cp target/x86_64-apple-darwin/release/playit-agent playit-macos-intel
-          elif [ -f target/x86_64-apple-darwin/release/playit ]; then
-            cp target/x86_64-apple-darwin/release/playit playit-macos-intel
-          else
-            echo "Could not find playit binary"
-            ls -lah target/x86_64-apple-darwin/release
-            exit 1
-          fi
+          mkdir playit-macos-intel-files
+          cp target/x86_64-apple-darwin/release/playit-cli playit-macos-intel-files/playit
+          cp target/x86_64-apple-darwin/release/playitd playit-macos-intel-files/playitd
+          chmod +x playit-macos-intel-files/playit
+          chmod +x playit-macos-intel-files/playitd
+          ls -lah playit-macos-intel-files
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: playit-macos-intel
-          path: playit-macos-intel
+          name: playit-macos-intel-files
+          path: playit-macos-intel-files
