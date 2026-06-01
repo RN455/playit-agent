@@ -1,11 +1,11 @@
-name: Build macOS playit
+name: Build macOS Intel playit
 
 on:
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-15-intel
 
     steps:
       - name: Checkout
@@ -13,24 +13,26 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-apple-darwin
 
-      - name: Build release
-        run: cargo build --release
+      - name: Build Intel release
+        run: cargo build --release --target x86_64-apple-darwin
 
       - name: List release files
-        run: ls -lah target/release
+        run: ls -lah target/x86_64-apple-darwin/release
 
       - name: Prepare artifact
         run: |
-          if [ -f target/release/playit-cli ]; then
-            cp target/release/playit-cli playit-macos-intel
-          elif [ -f target/release/playit-agent ]; then
-            cp target/release/playit-agent playit-macos-intel
-          elif [ -f target/release/playit ]; then
-            cp target/release/playit playit-macos-intel
+          if [ -f target/x86_64-apple-darwin/release/playit-cli ]; then
+            cp target/x86_64-apple-darwin/release/playit-cli playit-macos-intel
+          elif [ -f target/x86_64-apple-darwin/release/playit-agent ]; then
+            cp target/x86_64-apple-darwin/release/playit-agent playit-macos-intel
+          elif [ -f target/x86_64-apple-darwin/release/playit ]; then
+            cp target/x86_64-apple-darwin/release/playit playit-macos-intel
           else
-            echo "Could not find playit binary. Files:"
-            ls -lah target/release
+            echo "Could not find playit binary"
+            ls -lah target/x86_64-apple-darwin/release
             exit 1
           fi
 
