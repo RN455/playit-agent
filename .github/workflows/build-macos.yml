@@ -17,8 +17,22 @@ jobs:
       - name: Build release
         run: cargo build --release
 
-      - name: Rename binary
-        run: cp target/release/playit playit-macos-intel
+      - name: List release files
+        run: ls -lah target/release
+
+      - name: Prepare artifact
+        run: |
+          if [ -f target/release/playit-cli ]; then
+            cp target/release/playit-cli playit-macos-intel
+          elif [ -f target/release/playit-agent ]; then
+            cp target/release/playit-agent playit-macos-intel
+          elif [ -f target/release/playit ]; then
+            cp target/release/playit playit-macos-intel
+          else
+            echo "Could not find playit binary. Files:"
+            ls -lah target/release
+            exit 1
+          fi
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
